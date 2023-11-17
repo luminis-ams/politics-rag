@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Miljoenennota</title>
+</head>
+<body>
+<h1>Welkom bij de vragen over de partij programmas pagina.</h1>
+<p>Momenteel zijn de volgende partijen beschikbaar voor vragen:</p>
+<p th:if="${parties != null}" th:utext="${parties}"></p>
+<form action="#" method="POST" th:action="@{/parties}" th:object="${questionForm}" class="input-form">
+  <input id="messageText" th:field="*{messageText}" type="text" class="form-control input-text flex" placeholder="Ask your question here..." size="100">
+  <input id="submit-button" type="submit" class="btn btn-primary btn-sm button">
+</form>
+
+<p th:if="${answer != null}" th:utext="${answer}"></p>
+<p th:if="${answer == null}">No answer provided</p>
+
+<p><a href="/">Terug naar de beginpagina.</a></p>
+</body>
+</html>
