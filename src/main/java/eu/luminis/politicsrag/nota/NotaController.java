@@ -1,6 +1,6 @@
-package eu.luminis.politicsrag.web;
+package eu.luminis.politicsrag.nota;
 
-import eu.luminis.politicsrag.QuestionAnswerService;
+import eu.luminis.politicsrag.nota.NotaQuestionAnswerService;
 import eu.luminis.politicsrag.model.QuestionForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class NotaController {
-    private final QuestionAnswerService questionAnswerService;
+    private final NotaQuestionAnswerService questionAnswerService;
 
-    public NotaController(QuestionAnswerService questionAnswerService) {
+    public NotaController(NotaQuestionAnswerService questionAnswerService) {
         this.questionAnswerService = questionAnswerService;
     }
 

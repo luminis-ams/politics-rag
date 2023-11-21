@@ -1,7 +1,7 @@
-package eu.luminis.politicsrag.web;
+package eu.luminis.politicsrag.parties;
 
-import eu.luminis.politicsrag.PoliticalParties;
-import eu.luminis.politicsrag.QuestionAnswerService;
+import eu.luminis.politicsrag.model.PoliticalParties;
+import eu.luminis.politicsrag.nota.NotaQuestionAnswerService;
 import eu.luminis.politicsrag.model.QuestionForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class PartiesController {
 
-    private final QuestionAnswerService questionAnswerService;
+    private final PartiesQuestionAnswerService questionAnswerService;
 
-    public PartiesController(QuestionAnswerService questionAnswerService) {
+    public PartiesController(PartiesQuestionAnswerService questionAnswerService) {
         this.questionAnswerService = questionAnswerService;
     }
 
@@ -24,7 +24,7 @@ public class PartiesController {
     }
 
     @PostMapping("/parties")
-    public String asnwer(QuestionForm questionForm, Model model) {
+    public String answer(QuestionForm questionForm, Model model) {
         model.addAttribute("parties", String.join(", ", PoliticalParties.parties.keySet()));
 
         if (questionForm.getMessageText() != null) {

@@ -9,12 +9,10 @@ import dev.langchain4j.model.openai.OpenAiModelName;
 import dev.langchain4j.retriever.EmbeddingStoreRetriever;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.weaviate.WeaviateEmbeddingStore;
-import eu.luminis.politicsrag.PoliticalParties;
+import eu.luminis.politicsrag.model.PoliticalParties;
 import eu.luminis.politicsrag.custom.MultiRetriever;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
 
 @Configuration
 public class RAGConfig {

@@ -1,4 +1,4 @@
-package eu.luminis.politicsrag;
+package eu.luminis.politicsrag.ingest;
 
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.parser.PdfDocumentParser;

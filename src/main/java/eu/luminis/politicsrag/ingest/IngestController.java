@@ -1,8 +1,8 @@
-package eu.luminis.politicsrag.web;
+package eu.luminis.politicsrag.ingest;
 
-import eu.luminis.politicsrag.IngestService;
-import eu.luminis.politicsrag.PdfExtractorService;
-import eu.luminis.politicsrag.PoliticalParties;
+import eu.luminis.politicsrag.ingest.IngestService;
+import eu.luminis.politicsrag.ingest.PdfExtractorService;
+import eu.luminis.politicsrag.model.PoliticalParties;
 
 
 import org.springframework.stereotype.Controller;

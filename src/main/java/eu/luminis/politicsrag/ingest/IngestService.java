@@ -1,4 +1,4 @@
-package eu.luminis.politicsrag;
+package eu.luminis.politicsrag.ingest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,11 +7,10 @@ import java.util.Map;
 import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
-import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import dev.langchain4j.store.embedding.weaviate.WeaviateEmbeddingStore;
+import eu.luminis.politicsrag.model.PoliticalParties;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -6,9 +6,9 @@
 </head>
 <body>
 <h1>Welkom bij de vragen over de miljoenennota pagina.</h1>
-<form action="#" method="POST" th:action="@{/nota}" th:object="${questionForm}" class="input-form">
-    <input id="messageText" th:field="*{messageText}" type="text" class="form-control input-text flex" placeholder="Ask your question here..." size="100">
-    <input id="submit-button" type="submit" class="btn btn-primary btn-sm button">
+<form action="#" method="POST" th:action="@{/nota}" th:object="${questionForm}">
+    <input id="messageText" th:field="*{messageText}" type="text" placeholder="Stel je vraag hier..." size="100">
+    <input id="submit-button" type="submit">
 </form>
 
 <p th:if="${answer != null}" th:utext="${answer}"></p>

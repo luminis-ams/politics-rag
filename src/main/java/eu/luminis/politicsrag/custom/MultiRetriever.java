@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 public class MultiRetriever implements Retriever<TextSegment> {
-    private final String WEAVIATE_API_KEY = System.getenv("WEAVIATE_API_KEY");
-    private final String WEAVIATE_HOST = System.getenv("WEAVIATE_HOST");
+    private static final String WEAVIATE_API_KEY = System.getenv("WEAVIATE_API_KEY");
+    private static final String WEAVIATE_HOST = System.getenv("WEAVIATE_HOST");
 
     private static final int MAX_RESULTS = 1;
     private final EmbeddingModel embeddingModel;
@@ -49,6 +49,25 @@ public class MultiRetriever implements Retriever<TextSegment> {
                     .map(EmbeddingMatch::embedded)
                     .map(ts -> TextSegment.from(ts.text(), Metadata.from(Map.of("resource", key))))
                     .toList());
+        });
+
+        return allTextSegments;
+    }
+
+    public List<TextSegment> findRelevant(String text, List<String> parties) {
+        List<TextSegment> allTextSegments = new ArrayList<>();
+
+        Embedding embeddedText = embeddingModel.embed(text).content();
+
+        embeddingStores.forEach((key, value) -> {
+            if (parties.contains(key)) {
+                List<EmbeddingMatch<TextSegment>> relevant = value.findRelevant(embeddedText, MAX_RESULTS);
+
+                allTextSegments.addAll(relevant.stream()
+                        .map(EmbeddingMatch::embedded)
+                        .map(ts -> TextSegment.from(ts.text(), Metadata.from(Map.of("resource", key))))
+                        .toList());
+            }
         });
 
         return allTextSegments;

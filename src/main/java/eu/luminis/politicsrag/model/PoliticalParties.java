@@ -1,4 +1,4 @@
-package eu.luminis.politicsrag;
+package eu.luminis.politicsrag.model;
 
 import java.util.HashMap;
 import java.util.Map;
