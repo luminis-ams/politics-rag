@@ -33,6 +33,13 @@ public class IngestService {
                     .build();
             embeddingStores.put(key, embeddingStore);
         });
+
+        embeddingStores.put("nota", WeaviateEmbeddingStore.builder()
+                .apiKey(WEAVIATE_API_KEY)
+                .host(WEAVIATE_HOST)
+                .scheme("https")
+                .objectClass("Miljoenennota")
+                .build());
     }
 
     public void ingestDocument(Document document, String party) {
@@ -48,5 +55,16 @@ public class IngestService {
                 .embeddingStore(embeddingStores.get(party))
                 .build();
         ingestor.ingest(documents);
+    }
+
+    public void ingestMiljoenenNota(Document document) {
+        DocumentSplitter documentSplitter = DocumentSplitters.recursive(1024, 100);
+
+        EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
+                .documentSplitter(documentSplitter)
+                .embeddingModel(embeddingModel)
+                .embeddingStore(embeddingStores.get("nota"))
+                .build();
+        ingestor.ingest(document);
     }
 }

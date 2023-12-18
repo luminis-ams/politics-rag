@@ -1,6 +1,6 @@
 package eu.luminis.politicsrag.nota;
 
-import eu.luminis.politicsrag.nota.NotaQuestionAnswerService;
+import eu.luminis.politicsrag.evaluate.EvaluateResponse;
 import eu.luminis.politicsrag.model.QuestionForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class NotaController {
+
     private final NotaQuestionAnswerService questionAnswerService;
 
     public NotaController(NotaQuestionAnswerService questionAnswerService) {
@@ -21,11 +22,15 @@ public class NotaController {
     }
 
     @PostMapping("/nota")
-    public String asnwer(QuestionForm questionForm, Model model) {
+    public String answer(QuestionForm questionForm, Model model) {
 
         if (questionForm.getMessageText() != null) {
             String answer = questionAnswerService.answerNotaQuestion(questionForm.getMessageText());
             model.addAttribute("answer", answer);
+            EvaluateResponse evaluateResponse = questionAnswerService.evaluateNotaQuestion(
+                    questionForm.getMessageText(),
+                    "Vooral aan armoedebestrijding en ondersteuningsmaatregelen voor de lagere inkomens");
+
         }
 
         return "nota";

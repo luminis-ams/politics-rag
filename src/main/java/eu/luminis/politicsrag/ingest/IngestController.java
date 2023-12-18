@@ -27,4 +27,10 @@ public class IngestController {
         return "ingest";
     }
 
+    @GetMapping("/ingest-nota")
+    public String ingestNota() {
+        ingestService.ingestMiljoenenNota(pdfExtractorService.extract("miljoenennota-2024"));
+        return "ingest";
+    }
+
 }
