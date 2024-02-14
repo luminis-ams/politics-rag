@@ -1,24 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Partij Programma's</title>
+<head th:replace="~{head :: head}">
 </head>
 <body>
-<h1>Welkom bij de vragen over de partij programma's pagina.</h1>
-<p>Momenteel zijn de volgende partijen beschikbaar voor vragen:</p>
-<p th:if="${parties != null}" th:utext="${parties}"></p>
-<form action="#" method="POST" th:action="@{/agent}" th:object="${questionForm}">
-    <input id="messageText" th:field="*{messageText}" type="text" placeholder="Stel je vraag hier..." size="100">
-    <input id="submit-button" type="submit">
-</form>
+<div th:insert="~{header :: header}"></div>
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">Welkom bij de vragen over de partij programma's pagina.</h2>
+            <p class="card-text">Momenteel zijn de volgende partijen beschikbaar voor vragen:</p>
+            <p class="card-text" th:if="${parties != null}" th:utext="${parties}"></p>
 
-<div th:each="chatMessage : ${chatMessages}">
-    <h3 th:text="${chatMessage.username}"></h3>
-    <p th:utext="${chatMessage.messageText}"></p>
+            <form action="#" method="POST" th:action="@{/agent}" th:object="${questionForm}" class="needs-validation" novalidate>
+                <div class="form-group">
+                    <input id="messageText" th:field="*{messageText}" type="text" placeholder="Stel je vraag hier..." size="100" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please enter a message.
+                    </div>
+                </div>
+                <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Username</th>
+            <th scope="col">Message</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="chatMessage : ${chatMessages}">
+            <td th:text="${chatMessage.username}"></td>
+            <td th:utext="${chatMessage.messageText}"></td>
+        </tr>
+        <tr th:if="${chatMessages == null || chatMessages.isEmpty()}">
+            <td colspan="2">Nog geen berichten.</td>
+        </tr>
+        </tbody>
+    </table>
+
 </div>
-<p th:if="${chatMessages == null || chatMessages.isEmpty()}">Nog geen berichten.</p>
 
-<p><a href="/">Terug naar de beginpagina.</a></p>
 </body>
 </html>

@@ -1,6 +1,5 @@
 package eu.luminis.politicsrag.nota;
 
-import eu.luminis.politicsrag.evaluate.EvaluateResponse;
 import eu.luminis.politicsrag.model.QuestionForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,10 +26,6 @@ public class NotaController {
         if (questionForm.getMessageText() != null) {
             String answer = questionAnswerService.answerNotaQuestion(questionForm.getMessageText());
             model.addAttribute("answer", answer);
-            EvaluateResponse evaluateResponse = questionAnswerService.evaluateNotaQuestion(
-                    questionForm.getMessageText(),
-                    "Vooral aan armoedebestrijding en ondersteuningsmaatregelen voor de lagere inkomens");
-
         }
 
         return "nota";

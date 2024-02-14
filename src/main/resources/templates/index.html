@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<head th:replace="~{head :: head}">
 </head>
 <body>
-<h1>Demo Retrieval Augmented Generation</h1>
-<p>We hebben een aantal verschillende demo's klaargezet:</p>
-<ul>
-    <li><a href="/nota">Stel vragen over de miljoenennota</a></li>
-    <li><a href="/parties">Stel vragen over de partijprogramma's</a></li>
-    <li><a href="/agent">Stel vragen over een specifiek partijprogramma</a></li>
-</ul>
-
+<div th:insert="~{header :: header}"></div>
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">Demo Retrieval Augmented Generation</h2>
+            <p class="card-text">We hebben een aantal verschillende demo's klaargezet:</p>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a href="/nota">Stel vragen over de miljoenennota</a></li>
+                <li class="list-group-item"><a href="/parties">Stel vragen over de partijprogramma's</a></li>
+                <li class="list-group-item"><a href="/agent">Stel vragen over een specifiek partijprogramma</a></li>
+                <li class="list-group-item"><a href="/ingest">Importeer de partijprogramma's en de miljoenennota</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 </body>
 </html>

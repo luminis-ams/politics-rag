@@ -8,6 +8,9 @@ import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.input.PromptTemplate;
+import dev.langchain4j.rag.content.Content;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
+import dev.langchain4j.rag.query.Query;
 import dev.langchain4j.retriever.Retriever;
 import lombok.Builder;
 
@@ -19,7 +22,7 @@ import static dev.langchain4j.internal.ValidationUtils.ensureNotBlank;
 import static dev.langchain4j.internal.ValidationUtils.ensureNotNull;
 import static java.util.stream.Collectors.joining;
 
-public class CustomConversationalRetrievalChain implements Chain<String,RetrievalOutput> {
+public class CustomConversationalRetrievalChain implements Chain<String, RetrievalOutput> {
     private static final PromptTemplate DEFAULT_PROMPT_TEMPLATE = PromptTemplate.from(
             "Answer the following question to the best of your ability: {{question}}\n" +
                     "\n" +
@@ -28,13 +31,13 @@ public class CustomConversationalRetrievalChain implements Chain<String,Retrieva
     private final ChatLanguageModel chatLanguageModel;
     private final ChatMemory chatMemory;
     private final PromptTemplate promptTemplate;
-    private final Retriever<TextSegment> retriever;
+    private final ContentRetriever retriever;
 
     @Builder
     public CustomConversationalRetrievalChain(ChatLanguageModel chatLanguageModel,
                                               ChatMemory chatMemory,
                                               PromptTemplate promptTemplate,
-                                              Retriever<TextSegment> retriever) {
+                                              ContentRetriever retriever) {
         this.chatLanguageModel = ensureNotNull(chatLanguageModel, "chatLanguageModel");
         this.chatMemory = chatMemory == null ? MessageWindowChatMemory.withMaxMessages(10) : chatMemory;
         this.promptTemplate = promptTemplate == null ? DEFAULT_PROMPT_TEMPLATE : promptTemplate;
@@ -47,8 +50,10 @@ public class CustomConversationalRetrievalChain implements Chain<String,Retrieva
         question = ensureNotBlank(question, "question");
         builder.question(question);
 
-        List<TextSegment> relevantSegments = retriever.findRelevant(question);
-        builder.retrievals(relevantSegments.stream().map(TextSegment::text).toList());
+        List<Content> relevantSegments = retriever.retrieve(new Query(question));
+        builder.retrievals(relevantSegments.stream()
+                .map(Content::textSegment)
+                .map(TextSegment::text).toList());
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("question", question);
@@ -68,8 +73,9 @@ public class CustomConversationalRetrievalChain implements Chain<String,Retrieva
         return builder.build();
     }
 
-    private static String format(List<TextSegment> relevantSegments) {
+    private static String format(List<Content> relevantSegments) {
         return relevantSegments.stream()
+                .map(Content::textSegment)
                 .map(TextSegment::text)
                 .map(segment -> "..." + segment + "...")
                 .collect(joining("\n\n"));

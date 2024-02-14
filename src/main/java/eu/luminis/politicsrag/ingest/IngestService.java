@@ -10,24 +10,25 @@ import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import dev.langchain4j.store.embedding.weaviate.WeaviateEmbeddingStore;
+import eu.luminis.politicsrag.config.RAGConfig;
+import eu.luminis.politicsrag.config.keyloader.KeyLoader;
 import eu.luminis.politicsrag.model.PoliticalParties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class IngestService {
     private final EmbeddingModel embeddingModel;
-    private final String WEAVIATE_API_KEY = System.getenv("WEAVIATE_API_KEY");
-    private final String WEAVIATE_HOST = System.getenv("WEAVIATE_HOST");
-
 
     private final Map<String, WeaviateEmbeddingStore> embeddingStores = new HashMap<>();
 
-    public IngestService(EmbeddingModel embeddingModel) {
+    @Autowired
+    public IngestService(EmbeddingModel embeddingModel, KeyLoader keyLoader) {
         this.embeddingModel = embeddingModel;
         PoliticalParties.parties.forEach((key, value) -> {
             WeaviateEmbeddingStore embeddingStore = WeaviateEmbeddingStore.builder()
-                    .apiKey(WEAVIATE_API_KEY)
-                    .host(WEAVIATE_HOST)
+                    .apiKey(keyLoader.getWeaviateAPIKey())
+                    .host(keyLoader.getWeaviateURL())
                     .scheme("https")
                     .objectClass(key)
                     .build();
@@ -35,8 +36,8 @@ public class IngestService {
         });
 
         embeddingStores.put("nota", WeaviateEmbeddingStore.builder()
-                .apiKey(WEAVIATE_API_KEY)
-                .host(WEAVIATE_HOST)
+                .apiKey(keyLoader.getWeaviateAPIKey())
+                .host(keyLoader.getWeaviateURL())
                 .scheme("https")
                 .objectClass("Miljoenennota")
                 .build());

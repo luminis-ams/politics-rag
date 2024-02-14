@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Miljoenennota</title>
+<head th:replace="~{head :: head}">
 </head>
 <body>
-<h1>Welkom bij de vragen over de miljoenennota pagina.</h1>
-<form action="#" method="POST" th:action="@{/nota}" th:object="${questionForm}">
-    <input id="messageText" th:field="*{messageText}" type="text" placeholder="Stel je vraag hier..." size="100">
-    <input id="submit-button" type="submit">
-</form>
+<div th:insert="~{header :: header}"></div>
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">Welkom bij de vragen over de miljoenennota pagina.</h2>
+            <p class="card-text">Stel je vraag:</p>
 
-<p th:if="${answer != null}" th:utext="${answer}"></p>
-<p th:if="${answer == null}">No answer provided</p>
+            <form action="#" method="POST" th:action="@{/nota}" th:object="${questionForm}" class="needs-validation" novalidate>
+                <div class="form-group">
+                    <input id="messageText" th:field="*{messageText}" type="text" placeholder="Stel je vraag hier..." size="100" class="form-control" required>
+                    <div class="invalid-feedback">
+                        Please enter a message.
+                    </div>
+                </div>
+                <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
 
-<a href="/">Terug naar de beginpagina.</a>
+
+    <div class="alert alert-info" role="alert" th:if="${answer != null}" th:utext="${answer}"></div>
+    <div class="alert alert-info" role="alert" th:if="${answer == null}">No answer provided</div>
+
+</div>
+
 </body>
 </html>
