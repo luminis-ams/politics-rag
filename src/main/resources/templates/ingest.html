@@ -1,10 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Ingest</title>
+<head th:replace="~{head :: head}">
 </head>
 <body>
-<p>Ingested the documents into Weaviate</p>
+<div th:insert="~{header :: header}"></div>
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="card-title">Importeer documenten in Weaviate.</h2>
+
+            <p class="card-text mb-2">Met de volgende knop importeer je de volledige partijprogrammas</p>
+            <form action="#" method="POST" th:action="@{/ingest}" th:object="${questionForm}" class="needs-validation" novalidate>
+                <button id="submit-button-partij" type="submit" class="btn btn-primary">Partijprogramma's</button>
+            </form>
+
+            <p class="card-text mb-2">Met de volgende knop importeer je de miljoenennota</p>
+            <form action="#" method="POST" th:action="@{/ingest-nota}" th:object="${questionForm}" class="needs-validation" novalidate>
+                <button id="submit-button-nota" type="submit" class="btn btn-primary">Miljoenennota</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="alert alert-info" role="alert" th:if="${message != null}" th:utext="${message}"></div>
+
+</div>
+
 </body>
 </html>

@@ -4,30 +4,33 @@ import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.rag.content.Content;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
+import dev.langchain4j.rag.query.Query;
 import dev.langchain4j.retriever.Retriever;
 import dev.langchain4j.store.embedding.EmbeddingMatch;
 import dev.langchain4j.store.embedding.weaviate.WeaviateEmbeddingStore;
+import eu.luminis.politicsrag.config.keyloader.KeyLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MultiRetriever implements Retriever<TextSegment> {
-    private static final String WEAVIATE_API_KEY = System.getenv("WEAVIATE_API_KEY");
-    private static final String WEAVIATE_HOST = System.getenv("WEAVIATE_HOST");
+import static java.util.stream.Collectors.toList;
 
+public class MultiRetriever implements ContentRetriever {
     private static final int MAX_RESULTS = 1;
     private final EmbeddingModel embeddingModel;
     private final Map<String, WeaviateEmbeddingStore> embeddingStores = new HashMap<>();
 
-    public MultiRetriever(EmbeddingModel embeddingModel, List<String> resourceNames) {
+    public MultiRetriever(EmbeddingModel embeddingModel, List<String> resourceNames, KeyLoader keyLoader) {
         this.embeddingModel = embeddingModel;
 
         resourceNames.forEach(resourceName -> {
             WeaviateEmbeddingStore embeddingStore = WeaviateEmbeddingStore.builder()
-                    .apiKey(WEAVIATE_API_KEY)
-                    .host(WEAVIATE_HOST)
+                    .apiKey(keyLoader.getWeaviateAPIKey())
+                    .host(keyLoader.getWeaviateURL())
                     .scheme("https")
                     .objectClass(resourceName)
                     .build();
@@ -36,40 +39,34 @@ public class MultiRetriever implements Retriever<TextSegment> {
 
     }
 
-    @Override
-    public List<TextSegment> findRelevant(String text) {
-        List<TextSegment> allTextSegments = new ArrayList<>();
 
-        Embedding embeddedText = embeddingModel.embed(text).content();
+    public List<Content> findRelevant(Query query, List<String> parties) {
+        List<Content> allTextSegments = new ArrayList<>();
 
         embeddingStores.forEach((key, value) -> {
-            List<EmbeddingMatch<TextSegment>> relevant = value.findRelevant(embeddedText, MAX_RESULTS);
-
-            allTextSegments.addAll(relevant.stream()
-                    .map(EmbeddingMatch::embedded)
-                    .map(ts -> TextSegment.from(ts.text(), Metadata.from(Map.of("resource", key))))
-                    .toList());
+            if (parties.contains(key)) {
+                allTextSegments.addAll(this.retrieve(query));
+            }
         });
 
         return allTextSegments;
     }
 
-    public List<TextSegment> findRelevant(String text, List<String> parties) {
-        List<TextSegment> allTextSegments = new ArrayList<>();
+    @Override
+    public List<Content> retrieve(Query query) {
+        List<Content> contents = new ArrayList<>();
 
-        Embedding embeddedText = embeddingModel.embed(text).content();
+        Embedding embeddedText = embeddingModel.embed(query.text()).content();
 
         embeddingStores.forEach((key, value) -> {
-            if (parties.contains(key)) {
-                List<EmbeddingMatch<TextSegment>> relevant = value.findRelevant(embeddedText, MAX_RESULTS);
+            List<EmbeddingMatch<TextSegment>> relevant = value.findRelevant(embeddedText, MAX_RESULTS);
 
-                allTextSegments.addAll(relevant.stream()
-                        .map(EmbeddingMatch::embedded)
-                        .map(ts -> TextSegment.from(ts.text(), Metadata.from(Map.of("resource", key))))
-                        .toList());
-            }
+            contents.addAll(relevant.stream()
+                    .map(EmbeddingMatch::embedded)
+                    .map(Content::from)
+                    .toList());
         });
 
-        return allTextSegments;
+        return contents;
     }
 }
