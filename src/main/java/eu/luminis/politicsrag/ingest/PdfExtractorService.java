@@ -1,6 +1,7 @@
 package eu.luminis.politicsrag.ingest;
 
 import dev.langchain4j.data.document.Document;
+import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.document.parser.apache.pdfbox.ApachePdfBoxDocumentParser;
 import org.slf4j.Logger;
@@ -21,7 +22,8 @@ public class PdfExtractorService {
         try {
             File file = ResourceUtils.getFile(resourceLocation);
             Path filePath = file.toPath();
-            return FileSystemDocumentLoader.loadDocument(filePath, new ApachePdfBoxDocumentParser());
+            Document document = FileSystemDocumentLoader.loadDocument(filePath, new ApachePdfBoxDocumentParser());
+            return new Document(document.text(), Metadata.from("resource", pdfName));
         } catch (FileNotFoundException e) {
             LOGGER.error("Could not find file :{}", resourceLocation);
             throw new RuntimeException(e);

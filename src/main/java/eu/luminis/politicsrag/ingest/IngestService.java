@@ -20,13 +20,13 @@ import org.springframework.stereotype.Service;
 public class IngestService {
     private final EmbeddingModel embeddingModel;
 
-    private final Map<String, WeaviateEmbeddingStore> embeddingStores = new HashMap<>();
+    private final Map<String, CustomWeaviateEmbeddingStore> embeddingStores = new HashMap<>();
 
     @Autowired
     public IngestService(EmbeddingModel embeddingModel, KeyLoader keyLoader) {
         this.embeddingModel = embeddingModel;
         PoliticalParties.parties.forEach((key, value) -> {
-            WeaviateEmbeddingStore embeddingStore = WeaviateEmbeddingStore.builder()
+            CustomWeaviateEmbeddingStore embeddingStore = CustomWeaviateEmbeddingStore.builder()
                     .apiKey(keyLoader.getWeaviateAPIKey())
                     .host(keyLoader.getWeaviateURL())
                     .scheme("https")
@@ -35,7 +35,7 @@ public class IngestService {
             embeddingStores.put(key, embeddingStore);
         });
 
-        embeddingStores.put("nota", WeaviateEmbeddingStore.builder()
+        embeddingStores.put("nota", CustomWeaviateEmbeddingStore.builder()
                 .apiKey(keyLoader.getWeaviateAPIKey())
                 .host(keyLoader.getWeaviateURL())
                 .scheme("https")
